@@ -527,7 +527,7 @@ function _get_group_contact($group_id) {
   foreach ($groupContactss as $entity) {
     if($entity['status'] == 'Added') $groupContacts[] = $entity['contact_id'];
   }
-  Civi::log()->debug(">>> _get_group_contact groupContacts :".print_r($groupContacts,1));
+  // Civi::log()->debug(">>> _get_group_contact groupContacts :".print_r($groupContacts,1));
 
   return $groupContacts;
 }
