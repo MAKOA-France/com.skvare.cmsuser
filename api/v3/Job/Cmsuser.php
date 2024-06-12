@@ -508,16 +508,27 @@ function _get_tagged_contact($tag_id) {
  * @return array
  */
 function _get_group_contact($group_id) {
-  $groupContactResult = civicrm_api3('GroupContact', 'get', [
-    'sequential' => 1,
-    'return' => ["contact_id"],
-    'group_id' => $group_id,
-  ]);
+  // $groupContactResult = civicrm_api3('GroupContact', 'get', [
+  //   'sequential' => 1,
+  //   'return' => ["contact_id"],
+  //   'group_id' => $group_id,
+  // ]);
   $groupContacts = [];
-  // make list of all contact ids
-  foreach ($groupContactResult['values'] as $entity) {
-    $groupContacts[] = $entity['contact_id'];
+  // // make list of all contact ids
+  // foreach ($groupContactResult['values'] as $entity) {
+  //   $groupContacts[] = $entity['contact_id'];
+  // }
+
+  // AB : faire la requete avec API4 pour avoir tous les contacts ajouter au groupes et pas les 25 premiers que l'API3 fait
+  $groupContactss = \Civi\Api4\GroupContact::get(FALSE)
+    ->addWhere('group_id', '=',  $group_id)
+    // ->addWhere('status', '!=', 'Removed')
+    ->execute();
+  foreach ($groupContactss as $entity) {
+    if($entity['status'] == 'Added') $groupContacts[] = $entity['contact_id'];
   }
+  Civi::log()->debug(">>> _get_group_contact groupContacts :".print_r($groupContacts,1));
+
   return $groupContacts;
 }
 
